@@ -1,0 +1,14 @@
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: nibblelog
+      POSTGRES_USER: nibble
+      POSTGRES_PASSWORD: nibble
+    ports:
+      - "5432:5432"
+    volumes:
+      - nibble_pg:/var/lib/postgresql/data
+
+volumes:
+  nibble_pg:

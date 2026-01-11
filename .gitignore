@@ -1,0 +1,13 @@
+.github/copilot-instructions.md
+.env
+.venv
+__pycache__/
+*.pyc
+.DS_Store
+.vscode/
+.idea/
+node_modules/
+dist/
+build/
+*.log
+*.sqlite3
