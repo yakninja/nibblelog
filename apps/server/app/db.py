@@ -30,6 +30,8 @@ async def close_db():
 @asynccontextmanager
 async def get_db():
     """Get database connection from pool"""
+    if conn_pool is None:
+        raise RuntimeError("Database connection pool not initialized. Call init_db() first.")
     async with conn_pool.connection() as conn:
         async with conn.cursor(row_factory=dict_row) as cur:
             yield cur

@@ -42,9 +42,9 @@ cp .env.example .env
 PYTHONPATH=$PWD .venv/bin/uvicorn app.main:app --reload --port 8000
 ```
 
-Backend will be available at: http://localhost:8000
+Backend will be available at: <http://localhost:8000>
 
-API docs: http://localhost:8000/docs
+API docs: <http://localhost:8000/docs>
 
 ### 3. Start Client (Expo)
 
@@ -82,6 +82,7 @@ Prerequisites:
 - Xcode Command Line Tools: `xcode-select --install`
 
 Steps:
+
 1. Make sure backend is running (`cd apps/server && uvicorn app.main:app --reload`)
 2. Start Expo: `cd apps/client && npm start`
 3. Press **`i`** to open in iOS Simulator
@@ -89,15 +90,18 @@ Steps:
 
 #### iOS Physical Device
 
-**Option 1: Expo Go (Quick & Easy)**
+##### Option 1: Expo Go (Quick & Easy)
+
 1. Install [Expo Go](https://apps.apple.com/app/expo-go/id982107779) from App Store
 2. Make sure your phone and computer are on the same WiFi network
 3. Start Expo: `cd apps/client && npm start`
 4. Scan the QR code with your iPhone camera
 5. App will open in Expo Go
 
-**Option 2: Development Build (Full Features)**
+##### Option 2: Development Build (Full Features)
+
 For native features not supported by Expo Go:
+
 ```bash
 cd apps/client
 
@@ -146,7 +150,6 @@ docker compose up -d
 │   └── server/          # FastAPI backend
 ├── infra/
 │   ├── dev/            # Docker Compose for local dev
-│   ├── k8s/            # Kubernetes manifests (production)
 │   └── nginx/          # Nginx configs
 └── .github/
     ├── copilot-instructions.md
@@ -165,7 +168,8 @@ docker compose up -d
 ## Production Deployment
 
 Production runs on k0s with nginx TLS termination:
-- Frontend: https://nibble.yakninja.pro
-- API: https://nibbleapi.yakninja.pro
+
+- Frontend: <https://nibble.yakninja.pro>
+- API: <https://nibbleapi.yakninja.pro>
 
 See [.github/copilot-instructions.md](.github/copilot-instructions.md) for full deployment details.
