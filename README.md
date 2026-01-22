@@ -21,8 +21,8 @@ A local-first activity logger with minimal backend for authentication and sync.
 ### 1. Start Postgres
 
 ```bash
-docker compose up -d
-docker compose ps  # verify it's running
+docker compose -f docker-compose.dev.yml up -d
+docker compose -f docker-compose.dev.yml ps  # verify it's running
 ```
 
 ### 2. Start Backend (FastAPI)
@@ -133,12 +133,17 @@ pytest
 # Check backend health
 curl http://localhost:8000/health
 
-# View Postgres logs
-docker compose logs postgres
+# View Postgres logs (dev)
+docker compose -f docker-compose.dev.yml logs postgres
 
-# Reset database
-docker compose down -v
+# Reset database (dev)
+docker compose -f docker-compose.dev.yml down -v
+docker compose -f docker-compose.dev.yml up -d
+
+# Build and run all services with docker-compose (production-like)
+docker compose build
 docker compose up -d
+docker compose logs -f
 ```
 
 ## Project Structure
@@ -147,13 +152,14 @@ docker compose up -d
 /
 ├── apps/
 │   ├── client/          # Expo app (iOS + web)
+│   │   └── Dockerfile   # Multi-stage build for web
 │   └── server/          # FastAPI backend
-├── infra/
-│   ├── dev/            # Docker Compose for local dev
-│   └── nginx/          # Nginx configs
+│       └── Dockerfile   # Python 3.14 + uvicorn
+├── docker-compose.dev.yml   # Dev: Postgres only
+├── docker-compose.yml       # Production: All services
+├── Jenkinsfile              # CI/CD pipeline
 └── .github/
-    ├── copilot-instructions.md
-    └── workflows/      # CI/CD pipelines
+    └── copilot-instructions.md
 ```
 
 ## MVP Features
@@ -167,9 +173,32 @@ docker compose up -d
 
 ## Production Deployment
 
-Production runs on k0s with nginx TLS termination:
+Production runs on 134.122.58.227 with Docker, Jenkins CI/CD, and nginx TLS termination:
 
-- Frontend: <https://nibble.yakninja.pro>
-- API: <https://nibbleapi.yakninja.pro>
+- **Frontend**: <https://nibble.yakninja.pro> (Expo web build in nginx container)
+- **API**: <https://nibbleapi.yakninja.pro> (FastAPI behind nginx reverse proxy)
+- **Jenkins**: <https://jenkins.yakninja.pro> (automated deployments on push to main)
 
-See [.github/copilot-instructions.md](.github/copilot-instructions.md) for full deployment details.
+### Quick Production Setup
+
+```bash
+# On deployment server (134.122.58.227)
+cd /opt/nibblelog
+
+# Create .env file with production secrets
+cat > .env << EOF
+POSTGRES_PASSWORD=<strong-password>
+JWT_SECRET=<generate-with-openssl-rand-hex-32>
+NIBBLE_USERS=admin:<strong-password>
+CORS_ORIGINS=https://nibble.yakninja.pro
+EXPO_PUBLIC_API_URL=https://nibbleapi.yakninja.pro
+EOF
+
+# Start all services
+docker compose up -d
+
+# Check logs
+docker compose logs -f
+```
+
+See [.github/copilot-instructions.md](.github/copilot-instructions.md) for complete deployment guide including Jenkins setup and nginx configuration.

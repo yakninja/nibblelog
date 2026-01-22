@@ -1,4 +1,4 @@
-.github/copilot-instructions.md
+.github/*.md
 .env
 .venv
 __pycache__/

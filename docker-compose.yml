@@ -2,9 +2,10 @@ services:
   postgres:
     image: postgres:16-alpine
     container_name: nibblelog-postgres
+    restart: unless-stopped
     environment:
       POSTGRES_USER: nibble
-      POSTGRES_PASSWORD: nibble
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-nibble}
       POSTGRES_DB: nibblelog
     ports:
       - "5432:5432"
@@ -16,6 +17,44 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - nibblelog
+
+  server:
+    build:
+      context: ./apps/server
+      dockerfile: Dockerfile
+    container_name: nibblelog-server
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://nibble:${POSTGRES_PASSWORD:-nibble}@postgres:5432/nibblelog
+      JWT_SECRET: ${JWT_SECRET:-dev-secret-change-me-in-production}
+      NIBBLE_USERS: ${NIBBLE_USERS:-yak:changeme}
+      CORS_ORIGINS: ${CORS_ORIGINS:-https://nibble.yakninja.pro}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - nibblelog
+
+  client:
+    build:
+      context: ./apps/client
+      dockerfile: Dockerfile
+      args:
+        EXPO_PUBLIC_API_URL: ${EXPO_PUBLIC_API_URL:-https://nibbleapi.yakninja.pro}
+    container_name: nibblelog-client
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    networks:
+      - nibblelog
 
 volumes:
   postgres_data:
+
+networks:
+  nibblelog:
+    driver: bridge
