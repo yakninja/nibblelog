@@ -14,7 +14,7 @@ A local-first activity logger with minimal backend for authentication and sync.
 ### Prerequisites
 
 - Node.js 18+ (with npm or pnpm)
-- Python 3.11+
+- Python 3.14+
 - Docker & Docker Compose
 - Xcode (for iOS development)
 
@@ -31,7 +31,7 @@ docker compose ps  # verify it's running
 cd apps/server
 
 # First time: create venv and install dependencies
-python3 -m venv .venv
+python3.14 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 

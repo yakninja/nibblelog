@@ -1,5 +1,6 @@
 from pydantic_settings import BaseSettings
 from pathlib import Path
+from pydantic import ConfigDict
 
 
 class Settings(BaseSettings):
@@ -8,9 +9,7 @@ class Settings(BaseSettings):
     database_url: str
     cors_origins: str = ""
 
-    class Config:
-        env_file = Path(__file__).parent.parent / ".env"
-        case_sensitive = False
+    model_config = ConfigDict(env_file=Path(__file__).parent.parent / ".env", case_sensitive=False)  # type: ignore[typeddict-unknown-key,assignment]
 
 
-settings = Settings()
+settings = Settings()  # type: ignore[call-arg]
